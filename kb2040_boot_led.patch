@@ -1,0 +1,12 @@
+diff --git a/platforms/chibios/boards/QMK_PM2040/configs/config.h b/platforms/chibios/boards/QMK_PM2040/configs/config.h
+index ec85ae0cf4..78956665a8 100644
+--- a/platforms/chibios/boards/QMK_PM2040/configs/config.h
++++ b/platforms/chibios/boards/QMK_PM2040/configs/config.h
+@@ -19,3 +19,7 @@
+ #ifndef RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT
+ #    define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 500U
+ #endif
++
++#ifndef RP2040_BOOTLOADER_DOUBLE_TAP_RESET_LED
++#    define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_LED 17U
++#endif
