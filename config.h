@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+/* Vial UID */
+#define VIAL_KEYBOARD_UID {0x5F, 0xAB, 0x46, 0x42, 0x46, 0x09, 0x1F, 0xC2}
+
 /* Select hand configuration */
 
 #define MASTER_LEFT
