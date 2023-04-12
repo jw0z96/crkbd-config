@@ -72,6 +72,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #ifdef OLED_ENABLE
 #include <stdio.h>
 
+// #include "incbin.h"
+
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   if (!is_keyboard_master()) {
     return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
@@ -150,12 +152,20 @@ void render_bootmagic_status(bool status) {
 }
 
 void oled_render_logo(void) {
-    static const char PROGMEM crkbd_logo[] = {
-        0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8e, 0x8f, 0x90, 0x91, 0x92, 0x93, 0x94,
-        0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf, 0xb0, 0xb1, 0xb2, 0xb3, 0xb4,
-        0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 0xce, 0xcf, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4,
-        0};
-    oled_write_P(crkbd_logo, false);
+    // for whatever reason, INCBIN doesn't work within QMK, so use a char header
+    #include "res/replica.bin.h"
+    static const char* pcStartFrame = (char*)replica_bin + sizeof(uint32_t);
+    // each frame is (128 * 32) / 8 = 512 bytes
+    oled_write_raw(pcStartFrame, 512);
+
+    /*
+    #include "res/anim.bin.h"
+    static const char* pcStartFrame = (char*)anim_bin + sizeof(uint32_t);
+    const uint32_t ui32FrameCount = *(uint32_t*)anim_bin;
+    static uint16_t ui16Frame = 0;
+    ui16Frame = ui16Frame % ui32FrameCount;
+    oled_write_raw(pcStartFrame + (ui16Frame++ * 512), 512);
+    */
 }
 
 bool oled_task_user(void) {
