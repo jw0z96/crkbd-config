@@ -154,9 +154,10 @@ void render_bootmagic_status(bool status) {
 void oled_render_logo(void) {
     // for whatever reason, INCBIN doesn't work within QMK, so use a char header
     #include "res/replica.bin.h"
-    static const char* pcStartFrame = (char*)replica_bin + sizeof(uint32_t);
-    // each frame is (128 * 32) / 8 = 512 bytes
-    oled_write_raw(pcStartFrame, 512);
+    #include "res/ecco.bin.h"
+    #include "res/excess.bin.h"
+    #include "res/harvest.bin.h"
+    char* pcFrame;
 
     /*
     #include "res/anim.bin.h"
@@ -166,6 +167,27 @@ void oled_render_logo(void) {
     ui16Frame = ui16Frame % ui32FrameCount;
     oled_write_raw(pcStartFrame + (ui16Frame++ * 512), 512);
     */
+
+    switch (layer_state) {
+        case L_ALPHA:
+            pcFrame = (char*)replica_bin;
+            break;
+        case L_NAV:
+            pcFrame = (char*)ecco_bin;
+            break;
+        case L_SYM:
+            pcFrame = (char*)excess_bin;
+            break;
+        case L_FUNC:
+        case L_FUNC|L_NAV:
+        case L_FUNC|L_SYM:
+        case L_FUNC|L_NAV|L_SYM:
+            pcFrame = (char*)harvest_bin;
+            break;
+    }
+
+    // each frame is (128 * 32) / 8 = 512 bytes, with a 4 byte header offset
+    oled_write_raw(pcFrame + sizeof(uint32_t), 512);
 }
 
 bool oled_task_user(void) {
